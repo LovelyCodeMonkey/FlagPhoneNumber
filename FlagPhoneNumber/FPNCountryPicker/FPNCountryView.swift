@@ -1,18 +1,17 @@
 import Foundation
 
 class FPNCountryView: NibLoadingView {
-
 	@IBOutlet weak var flagImageView: UIImageView!
 	@IBOutlet weak var countryNameLabel: UILabel!
 	@IBOutlet weak var countryCodeLabel: UILabel!
 
-	override init(frame: CGRect) {
-		super.init(frame: frame)
+  init() {
+		super.init(frame: .zero)
 	}
 
-	required init?(coder aDecoder: NSCoder) {
-		super.init(coder: aDecoder)
-	}
+  required init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
 
 	func setup(_ country: FPNCountry) {
 		flagImageView.image = country.flag

@@ -34,7 +34,7 @@ open class FPNTextField: UITextField, FPNCountryPickerDelegate, FPNDelegate {
 	}
 
 	private var phoneCodeTextField: UITextField = UITextField()
-	private lazy var countryPicker: FPNCountryPicker = FPNCountryPicker()
+  private lazy var countryPicker: FPNCountryPicker = FPNCountryPicker(placeholderColor: placeholderColor)
 	private lazy var phoneUtil: NBPhoneNumberUtil = NBPhoneNumberUtil()
 	private var nbPhoneNumber: NBPhoneNumber?
 	private var formatter: NBAsYouTypeFormatter?
@@ -76,23 +76,23 @@ open class FPNTextField: UITextField, FPNCountryPickerDelegate, FPNDelegate {
 	/// Input Accessory View for the texfield
 	public var textFieldInputAccessoryView: UIView?
 
-	init() {
+  private let highlightColor: UIColor
+  private let placeholderColor: UIColor
+
+  init(highlightColor: UIColor, placeholderColor: UIColor, countryPickerBackgroundColor: UIColor) {
+    self.highlightColor = highlightColor
+    self.placeholderColor = placeholderColor
 		super.init(frame: .zero)
 
-		setup()
-	}
-
-	public override init(frame: CGRect) {
-		super.init(frame: frame)
+    tintColor = highlightColor
+    countryPicker.backgroundColor = countryPickerBackgroundColor
 
 		setup()
 	}
 
-	required public init?(coder aDecoder: NSCoder) {
-		super.init(coder: aDecoder)
-
-		setup()
-	}
+  required public init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
 
 	deinit {
 		parentViewController = nil
@@ -160,7 +160,6 @@ open class FPNTextField: UITextField, FPNCountryPickerDelegate, FPNDelegate {
 	private func setupCountryPicker() {
 		countryPicker.countryPickerDelegate = self
 		countryPicker.showPhoneNumbers = true
-		countryPicker.backgroundColor = .white
 
 		if let regionCode = Locale.current.regionCode, let countryCode = FPNCountryCode(rawValue: regionCode) {
 			countryPicker.setCountry(countryCode)
@@ -172,14 +171,14 @@ open class FPNTextField: UITextField, FPNCountryPickerDelegate, FPNDelegate {
 	@objc private func displayNumberKeyBoard() {
 		inputView = nil
 		inputAccessoryView = textFieldInputAccessoryView
-		tintColor = .gray
+    tintColor = highlightColor
 		reloadInputViews()
+    becomeFirstResponder()
 	}
 
 	@objc private func displayCountryKeyboard() {
 		inputView = countryPicker
-		inputAccessoryView = getToolBar(with: getCountryListBarButtonItems())
-		tintColor = .clear
+    tintColor = .clear
 		reloadInputViews()
 		becomeFirstResponder()
 	}
@@ -379,6 +378,8 @@ open class FPNTextField: UITextField, FPNCountryPickerDelegate, FPNDelegate {
 		} else {
 			placeholder = nil
 		}
+    let phoneNumberPlaceHolder = NSAttributedString(string: placeholder!, attributes: [.foregroundColor: placeholderColor])
+    attributedPlaceholder = phoneNumberPlaceHolder
 	}
 
 	// - FPNCountryPickerDelegate

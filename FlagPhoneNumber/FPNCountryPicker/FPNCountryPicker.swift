@@ -12,17 +12,18 @@ open class FPNCountryPicker: UIPickerView, UIPickerViewDelegate, UIPickerViewDat
 	weak var countryPickerDelegate: FPNCountryPickerDelegate?
 	open var showPhoneNumbers: Bool = true
 
-	override init(frame: CGRect) {
-		super.init(frame: frame)
+  private let placeholderColor: UIColor
+
+  init(placeholderColor: UIColor) {
+    self.placeholderColor = placeholderColor
+		super.init(frame: .zero)
 
 		setup()
 	}
 
-	required public init?(coder aDecoder: NSCoder) {
-		super.init(coder: aDecoder)
-
-		setup()
-	}
+  required public init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
 
 	func setup() {
 		if let code = Locale.preferredLanguages.first {
@@ -172,7 +173,9 @@ open class FPNCountryPicker: UIPickerView, UIPickerViewDelegate, UIPickerViewDat
 		var resultView: FPNCountryView
 
 		if view == nil {
-			resultView = FPNCountryView()
+      resultView = FPNCountryView()
+      resultView.countryCodeLabel.textColor = placeholderColor
+      resultView.countryNameLabel.textColor = placeholderColor
 		} else {
 			resultView = view as! FPNCountryView
 		}
