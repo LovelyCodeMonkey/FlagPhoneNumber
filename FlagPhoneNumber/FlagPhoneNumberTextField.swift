@@ -12,19 +12,19 @@ import libPhoneNumber_iOS
 open class FPNTextField: UITextField, FPNCountryPickerDelegate, FPNDelegate {
 
 	/// The size of the flag
-	public var flagSize: CGSize = CGSize(width: 32, height: 32) {
-		didSet {
-			layoutSubviews()
-		}
-	}
+  public var flagSize: CGSize = CGSize(width: 27, height: 27) {
+    didSet {
+      layoutSubviews()
+    }
+  }
 
-	/// The edges insets of the flag button
-	public var flagButtonEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 0, left: 5, bottom: 0, right: 5) {
-		didSet {
-			layoutSubviews()
-		}
-	}
-
+  /// The edges insets of the flag button
+  public var flagButtonEdgeInsets: UIEdgeInsets = UIEdgeInsets(top: 0, left: 10, bottom: 0, right: 5) {
+    didSet {
+      layoutSubviews()
+    }
+  }
+  
 	/// The size of the leftView
 	private var leftViewSize: CGSize {
 		let width = flagSize.width + flagButtonEdgeInsets.left + flagButtonEdgeInsets.right + phoneCodeTextField.frame.width
