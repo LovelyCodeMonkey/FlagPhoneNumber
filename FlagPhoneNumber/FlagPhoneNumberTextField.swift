@@ -79,7 +79,7 @@ open class FPNTextField: UITextField, FPNCountryPickerDelegate, FPNDelegate {
   private let highlightColor: UIColor
   private let placeholderColor: UIColor
 
-  init(highlightColor: UIColor, placeholderColor: UIColor, countryPickerBackgroundColor: UIColor) {
+  public init(highlightColor: UIColor, placeholderColor: UIColor, countryPickerBackgroundColor: UIColor) {
     self.highlightColor = highlightColor
     self.placeholderColor = placeholderColor
 		super.init(frame: .zero)
