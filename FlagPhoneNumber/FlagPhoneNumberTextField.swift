@@ -241,31 +241,43 @@ open class FPNTextField: UITextField, FPNCountryPickerDelegate, FPNDelegate {
 
 	// Private
 
-	@objc private func didEditText() {
-		if let phoneCode = selectedCountry?.phoneCode, let number = text {
-			var cleanedPhoneNumber = clean(string: "\(phoneCode) \(number)")
+  @objc private func didEditText() {
+    let delegate = self.delegate as? FPNTextFieldDelegate
 
-			if let validPhoneNumber = getValidNumber(phoneNumber: cleanedPhoneNumber) {
-				nbPhoneNumber = validPhoneNumber
+    if let phoneCode = selectedCountry?.phoneCode, var number = text {
+      if let validPhoneNumber = getValidNumber(phoneNumber: number) {
+        let newPhoneCode = "+\(validPhoneNumber.countryCode.stringValue)"
+        if newPhoneCode != selectedCountry?.phoneCode {
+          number = number.replacingOccurrences(of: newPhoneCode, with: "")
 
-				cleanedPhoneNumber = "+\(validPhoneNumber.countryCode.stringValue)\(validPhoneNumber.nationalNumber.stringValue)"
+          text = number
+          countryPicker.setCountryByPhoneCode(newPhoneCode)
+          return
+        }
+      }
 
-				if let inputString = formatter?.inputString(cleanedPhoneNumber) {
-					text = remove(dialCode: phoneCode, in: inputString)
-				}
-				(delegate as? FPNTextFieldDelegate)?.fpnDidValidatePhoneNumber(textField: self, isValid: true)
-			} else {
-				nbPhoneNumber = nil
+      var cleanedPhoneNumber = clean(string: "\(phoneCode) \(number)")
 
-				if let dialCode = selectedCountry?.phoneCode {
-					if let inputString = formatter?.inputString(cleanedPhoneNumber) {
-						text = remove(dialCode: dialCode, in: inputString)
-					}
-				}
-				(delegate as? FPNTextFieldDelegate)?.fpnDidValidatePhoneNumber(textField: self, isValid: false)
-			}
-		}
-	}
+      let isValid: Bool
+
+      if let validPhoneNumber = getValidNumber(phoneNumber: cleanedPhoneNumber) {
+        nbPhoneNumber = validPhoneNumber
+
+        cleanedPhoneNumber = "+\(validPhoneNumber.countryCode.stringValue)\(validPhoneNumber.nationalNumber.stringValue)"
+
+        isValid = true
+      } else {
+        nbPhoneNumber = nil
+
+        isValid = false
+      }
+
+      if let inputString = formatter?.inputString(cleanedPhoneNumber) {
+        text = remove(dialCode: phoneCode, in: inputString)
+      }
+      delegate?.fpnDidValidatePhoneNumber(textField: self, isValid: isValid)
+    }
+  }
 
 	private func convert(format: FPNFormat) -> NBEPhoneNumberFormat {
 		switch format {
